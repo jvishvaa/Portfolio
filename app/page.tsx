@@ -7,8 +7,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MarqueeMessage from "@/components/MarqueeMessage";
 import SkillsMarquee from "@/components/MarqueeSkills";
-import StatsCircles from "@/components/statsCircle";
-// import InteractiveStats from "@/components/InteractiveStats";
 import InteractiveStatsDetails from "@/components/IntercativeStatsDetails";
 
 export default function Home() {
@@ -18,7 +16,6 @@ export default function Home() {
       <Hero />
       <MarqueeMessage />
       <About />
-      {/* <StatsCircles /> */}
       <InteractiveStatsDetails />
       <SkillsMarquee />
       <Experience />
