@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 
-export default function InteractiveStats() {
+export default function InteractiveStatsDetails() {
   const sceneRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
@@ -219,9 +219,9 @@ export default function InteractiveStats() {
       },
     });
 
-    Matter.Events.on(mouseConstraint, "startdrag", (event) => {
+    Matter.Events.on(mouseConstraint, "startdrag", (event: any) => {
       const body = event.body;
-      if (body.label.startsWith("ball-")) {
+      if (body && body.label && body.label.startsWith("ball-")) {
         const index = parseInt(body.label.split("-")[1]);
         setSelectedBallIndex(index);
       }

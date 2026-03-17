@@ -20,26 +20,21 @@ export default function InteractiveStats() {
       number: "12k+",
       label: "Daily Users\nServed",
       color: "#cc0808",
-      //   gradient: ["#8b5cf6", "#7c3aed"],
     },
     {
       number: "10+",
       label: "Projects\nCompleted",
       color: "#ec4899",
-      //   gradient: ["#ec4899", "#db2777"],
     },
     {
       number: "3",
       label: "Companies\nWorked",
       color: "#f59e0b",
-      //   gradient: ["#f59e0b", "#d97706"],
     },
     {
       number: "100%",
       label: "Client\nSatisfaction",
       color: "black",
-      //   color: "#ff0000",
-      //   gradient: ["#10b981", "#059669"],
     },
   ];
 

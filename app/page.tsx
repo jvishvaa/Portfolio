@@ -9,7 +9,7 @@ import MarqueeMessage from "@/components/MarqueeMessage";
 import SkillsMarquee from "@/components/MarqueeSkills";
 import StatsCircles from "@/components/statsCircle";
 // import InteractiveStats from "@/components/InteractiveStats";
-import InteractiveStats from "@/components/IntercativeStatsDetails";
+import InteractiveStatsDetails from "@/components/IntercativeStatsDetails";
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
       <MarqueeMessage />
       <About />
       {/* <StatsCircles /> */}
-      <InteractiveStats />
+      <InteractiveStatsDetails />
       <SkillsMarquee />
       <Experience />
       <Portfolio />
