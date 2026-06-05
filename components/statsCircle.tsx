@@ -8,8 +8,8 @@ export default function StatsCircles() {
 
   const stats = [
     {
-      number: "14+",
-      label: "Months Experience",
+      number: "2+",
+      label: "Years of Experience",
       delay: "0s",
     },
     {

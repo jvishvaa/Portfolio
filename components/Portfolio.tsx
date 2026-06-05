@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -38,16 +39,6 @@ export default function Portfolio() {
       image: "/stock_update/stock_update.png",
       tags: ["React", "Next JS", "TypeScript", "Node JS"],
     },
-    // {
-    //   id: 3,
-    //   title: "AI Movie Recommendations",
-    //   category: "Full Stack",
-    //   date: "DEC 2024",
-    //   description:
-    //     "Movie recommendation engine using semantic embeddings to deliver personalized results from 1K+ movies with FastAPI backend.",
-    //   image: "/api/placeholder/600/400",
-    //   tags: ["React", "JavaScript", "FastAPI", "Python"],
-    // },
     {
       id: 4,
       title: "Shopping Seller App",
@@ -105,80 +96,102 @@ export default function Portfolio() {
   return (
     <section
       id="portfolio"
-      className="py-20 bg-gradient-to-b from-white to-gray-50"
+      className="py-20 bg-gradient-to-b from-white to-gray-50/50 overflow-hidden"
     >
-      <div className="container-custom">
+      <div className="container-custom max-w-7xl mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="section-title">Featured Work</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            Featured Work
+          </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-accent to-purple-600 mx-auto rounded-full mb-4"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            A selection of impactful projects that shaped user experiences
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+            A selection of impactful engineering projects shaping web ecosystem
+            frameworks.
           </p>
-        </div>
+        </motion.div>
 
         {/* Filters */}
-        <div
-          className="flex flex-wrap justify-center gap-3 mb-12 animate-slide-up"
-          style={{ animationDelay: "0.1s" }}
-        >
+        <div className="flex flex-wrap justify-center gap-2.5 mb-14">
           {filters.map((filter) => (
-            <button
+            <motion.button
               key={filter}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setActiveFilter(filter)}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+              className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
                 activeFilter === filter
-                  ? "bg-accent text-white shadow-lg scale-105"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-accent text-white shadow-md shadow-accent/20"
+                  : "bg-white border border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200"
               }`}
             >
-              {filter.charAt(0).toUpperCase() + filter.slice(1)}
-            </button>
+              {filter}
+            </motion.button>
           ))}
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
-            <div
-              key={project.id}
-              className="portfolio-card-container"
-              style={{ animationDelay: `${0.1 + index * 0.05}s` }}
-            >
-              <div className="portfolio-card group">
-                {/* Image Container */}
-                <div className="portfolio-image-wrapper">
+        {/* Projects Grid with AnimatePresence */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                key={project.id}
+                className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-gray-200/80 transition-all duration-300 flex flex-col h-full"
+              >
+                {/* Media Wrapper */}
+                <div className="relative aspect-video w-full overflow-hidden bg-gray-50 border-b border-gray-50">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="portfolio-image"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
 
-                  {/* Tags Overlay - Top Left */}
-                  <div className="portfolio-tags">
-                    {project.tags.slice(0, 6).map((tag, idx) => (
-                      <span key={idx} className="portfolio-tag">
+                  {/* Subtle Top Category Badge Overlay */}
+                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md border border-gray-100 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                    {project.category}
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="p-6 flex flex-col flex-grow justify-between">
+                  <div>
+                    <div className="text-xs font-bold text-accent tracking-wider uppercase mb-1.5 opacity-80">
+                      {project.date}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 tracking-tight mb-2.5 group-hover:text-accent transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* Built-with tags stack */}
+                  <div className="flex flex-wrap gap-1.5 pt-4 border-t border-gray-50">
+                    {project.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[11px] font-semibold text-gray-500 bg-gray-50 border border-gray-100/60 px-2 py-1 rounded-md"
+                      >
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
-
-                {/* Info Section */}
-                <div className="portfolio-info">
-                  {/* Date */}
-                  <div className="portfolio-date">{project.date}</div>
-
-                  {/* Title */}
-                  <h3 className="portfolio-title">{project.title}</h3>
-
-                  {/* Description - Shows on Hover */}
-                  <p className="portfolio-description">{project.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );

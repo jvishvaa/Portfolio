@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function Experience() {
   const experiences = [
     {
+      id: "k12",
       company: "K12 Techno Services",
       role: "Software Development Engineer - 1",
       period: "Jun 2023 – Aug 2024",
@@ -18,6 +22,7 @@ export default function Experience() {
       logo: "🏫",
     },
     {
+      id: "ylurn",
       company: "Ylurn Technology",
       role: "Mobile App Developer (Intern)",
       period: "Feb 2021 – Apr 2021",
@@ -31,6 +36,7 @@ export default function Experience() {
       logo: "📱",
     },
     {
+      id: "eduvisory",
       company: "Eduvisory",
       role: "Web Developer (Intern)",
       period: "Jun 2020 – Dec 2020",
@@ -46,92 +52,173 @@ export default function Experience() {
     },
   ];
 
+  // Initialize with the most recent experience item open by default
+  const [expandedId, setExpandedId] = useState<string | null>("k12");
+
   return (
-    <section id="experience" className="py-20 gradient-mesh">
-      <div className="container-custom">
+    <section
+      id="experience"
+      className="py-20 bg-gray-50/50 relative overflow-hidden"
+    >
+      <div className="container-custom max-w-5xl mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="section-title">Work Experience</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            Work Experience
+          </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-accent to-purple-600 mx-auto rounded-full mb-4"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            A journey through innovative companies, creating impactful user
-            experiences
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+            A journey through engineering teams, delivering enterprise features
+            and high-scale user architectures.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Timeline */}
-        <div className="max-w-4xl mx-auto">
-          <div className="space-y-8">
-            {experiences.map((exp, index) => (
-              <div
-                key={exp.company}
-                className="card p-8 md:p-10 hover-lift animate-slide-up relative"
-                style={{ animationDelay: `${index * 0.1}s` }}
+        {/* Timeline Core Track */}
+        <div className="relative max-w-4xl mx-auto pl-4 md:pl-8 border-l-2 border-gray-200/80 space-y-10">
+          {experiences.map((exp, index) => {
+            const isExpanded = expandedId === exp.id;
+
+            return (
+              <motion.div
+                key={exp.id}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+                className="relative group"
               >
-                {/* Timeline Line */}
-                {index !== experiences.length - 1 && (
-                  <div className="hidden md:block absolute left-16 top-full w-0.5 h-8 bg-gradient-to-b from-accent to-purple-600 opacity-30"></div>
-                )}
+                {/* Custom Dynamic Bullet Tracker Node */}
+                <div className="absolute -left-[25px] md:-left-[41px] top-6 z-10 transition-transform duration-300 group-hover:scale-110">
+                  <div
+                    className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-4 flex items-center justify-center transition-all duration-300 ${
+                      isExpanded
+                        ? "bg-accent border-accent shadow-md shadow-accent/40 scale-110"
+                        : "bg-white border-gray-300 group-hover:border-accent"
+                    }`}
+                  />
+                </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Company Logo */}
-                  <div className="flex-shrink-0">
-                    <div className="w-20 h-20 bg-gradient-to-br from-accent/10 to-purple-600/10 rounded-2xl flex items-center justify-center text-4xl hover:scale-110 transition-transform">
-                      {exp.logo}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-grow">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                {/* Experience Accordion Wrapper Card */}
+                <div
+                  onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                  className={`bg-white rounded-2xl border transition-all duration-300 cursor-pointer p-6 md:p-8 select-none ${
+                    isExpanded
+                      ? "shadow-xl shadow-gray-200/50 border-accent/20 ring-1 ring-accent/5"
+                      : "shadow-sm border-gray-100 hover:border-gray-200 hover:shadow-md"
+                  }`}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 md:w-14 md:h-14 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-2.5xl flex-shrink-0 shadow-sm">
+                        {exp.logo}
+                      </div>
                       <div>
-                        <h3 className="font-display text-2xl font-bold text-primary mb-1">
+                        <h3 className="font-display text-xl md:text-2xl font-bold text-gray-900 tracking-tight leading-tight">
                           {exp.role}
                         </h3>
-                        <p className="text-accent font-semibold text-lg">
+                        <p className="text-accent font-semibold text-sm md:text-base mt-0.5">
                           {exp.company}
                         </p>
                       </div>
-                      <div className="mt-2 md:mt-0">
-                        <span className="inline-block bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium">
-                          {exp.period}
-                        </span>
-                      </div>
                     </div>
 
-                    <p className="text-gray-600 leading-relaxed mb-6">
-                      {exp.description}
-                    </p>
-
-                    {/* Achievements */}
-                    <div className="space-y-3">
-                      <p className="font-semibold text-gray-700 text-sm uppercase tracking-wide">
-                        Key Achievements
-                      </p>
-                      <ul className="space-y-2">
-                        {exp.achievements.map((achievement, i) => (
-                          <li key={i} className="flex items-start space-x-3">
-                            <svg
-                              className="w-5 h-5 text-accent flex-shrink-0 mt-0.5"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="text-gray-700">{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="flex items-center justify-between md:justify-end gap-3 border-t md:border-0 pt-3 md:pt-0 border-gray-50">
+                      <span className="text-xs md:text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg">
+                        {exp.period}
+                      </span>
+                      <motion.div
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 200,
+                          damping: 20,
+                        }}
+                        className="text-gray-400 w-8 h-8 rounded-full bg-gray-50 md:flex items-center justify-center hidden"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </motion.div>
                     </div>
                   </div>
+
+                  {/* Primary Summary block visibility */}
+                  {!isExpanded && (
+                    <p className="text-gray-500 text-sm mt-4 line-clamp-1 transition-all">
+                      {exp.description}
+                    </p>
+                  )}
+
+                  {/* Expandable Structural Container */}
+                  <AnimatePresence initial={false}>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-6 mt-6 border-t border-gray-100 space-y-5">
+                          <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                            {exp.description}
+                          </p>
+
+                          <div className="space-y-3">
+                            <h4 className="text-xs font-bold text-gray-400 tracking-wider uppercase">
+                              Key Outcomes & Metrics
+                            </h4>
+                            <ul className="space-y-3">
+                              {exp.achievements.map((achievement, i) => (
+                                <li
+                                  key={i}
+                                  className="flex items-start gap-3 text-sm md:text-base text-gray-700"
+                                >
+                                  <svg
+                                    className="w-5 h-5 text-accent flex-shrink-0 mt-0.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2.5}
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                  <span>{achievement}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            ))}
-          </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

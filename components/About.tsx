@@ -1,35 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function About() {
-  const [scrollProgress, setScrollProgress] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (sectionRef.current) {
-        const section = sectionRef.current;
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
+  // High-performance scroll tracking tied natively to Framer Motion
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start center", "end center"],
+  });
 
-        const scrollStart = sectionTop - windowHeight / 2;
-        const scrollEnd = sectionTop + sectionHeight - windowHeight / 2;
-
-        if (scrollY > scrollStart && scrollY < scrollEnd) {
-          const progress =
-            ((scrollY - scrollStart) / (scrollEnd - scrollStart)) * 100;
-          setScrollProgress(Math.min(Math.max(progress, 0), 100));
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Maps scroll progress smoothly from 0% to 100% height
+  const scaleY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   const highlights = [
     {
@@ -55,19 +40,26 @@ export default function About() {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 bg-white">
+    <section id="about" ref={sectionRef} className="py-20 bg-white relative">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* Left Side - Sticky */}
-          <div className="lg:sticky lg:top-32 lg:self-start">
-            {/* Progress Line */}
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-200 rounded-full hidden lg:block">
-              <div
-                className="bg-gradient-to-b from-accent to-purple-600 rounded-full transition-all duration-300"
-                style={{ height: `${scrollProgress}%` }}
-              ></div>
+          {/* Left Side - Sticky content containing summary */}
+          <div className="lg:sticky lg:top-32 lg:self-start relative">
+            {/* Dynamic Scroll Progress Line */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-100 rounded-full hidden lg:block">
+              <motion.div
+                className="bg-gradient-to-b from-accent to-purple-600 rounded-full origin-top h-full"
+                style={{ scaleY }}
+              />
             </div>
-            <div className="space-y-6 animate-slide-up ml-10">
+
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="space-y-6 ml-0 lg:ml-10"
+            >
               <div>
                 <span className="text-accent font-semibold text-sm uppercase tracking-wider">
                   Who I Am
@@ -79,7 +71,7 @@ export default function About() {
               </div>
 
               <p className="text-lg text-gray-700 leading-relaxed">
-                Software Development Engineer with over 14 months of experience
+                Software Development Engineer with over 2+ years of experience
                 in full-stack development. I specialize in building responsive
                 and intuitive UIs with React for websites, React Native for
                 mobile applications, creating models & APIs using Django for
@@ -104,30 +96,38 @@ export default function About() {
                 </span>
                 .
               </p>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right Side - Scrolling Content */}
+          {/* Right Side - Cascading Scrolling Experience Cards */}
           <div className="space-y-12">
             {highlights.map((highlight, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="scroll-highlight-card"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                whileHover={{ y: -6, scale: 1.01 }}
+                className="bg-gray-50 rounded-3xl p-8 md:p-10 border border-transparent hover:border-accent/10 hover:bg-white hover:shadow-xl transition-all duration-300 cursor-pointer group"
               >
-                <div className="bg-gray-50 rounded-3xl p-8 md:p-10 hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-accent/20">
-                  <h3 className="font-display text-3xl font-bold text-[#016493] mb-4">
-                    {highlight.title}
-                  </h3>
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    {highlight.description}
-                  </p>
-                </div>
-              </div>
+                <h3 className="font-display text-3xl font-bold text-[#016493] mb-4 transition-colors group-hover:text-accent">
+                  {highlight.title}
+                </h3>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  {highlight.description}
+                </p>
+              </motion.div>
             ))}
 
-            {/* Bottom CTA Card */}
-            <div className="bg-gradient-to-br from-accent to-purple-600 rounded-3xl p-8 md:p-10 text-white">
+            {/* Bottom CTA Highlight Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+              className="bg-gradient-to-br from-accent to-purple-600 rounded-3xl p-8 md:p-10 text-white shadow-lg"
+            >
               <h3 className="font-display text-3xl font-bold mb-4">
                 Let's Build Something Amazing
               </h3>
@@ -137,15 +137,14 @@ export default function About() {
                 solving complex problems, I'm always ready for the next
                 challenge.
               </p>
-              <button className="bg-white text-accent px-8 py-3 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <Link
-                  href="#contact"
-                  // className="block nav-link py-2"
-                >
-                  Get In Touch
-                </Link>
-              </button>
-            </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white text-accent px-8 py-3 rounded-lg font-semibold shadow-md transition-shadow hover:shadow-xl"
+              >
+                <Link href="#contact">Get In Touch</Link>
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </div>

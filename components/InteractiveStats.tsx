@@ -11,8 +11,8 @@ export default function InteractiveStats() {
 
   const stats = [
     {
-      number: "14+",
-      label: "Months\nExperience",
+      number: "2+",
+      label: "Years\nExperience",
       color: "#0470c9",
       //   gradient: ["#6366f1", "#4f46e5"],
     },

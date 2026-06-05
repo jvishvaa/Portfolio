@@ -15,10 +15,10 @@ export default function InteractiveStatsDetails() {
 
   const stats = [
     {
-      number: "14+",
-      label: "Months\nExperience",
+      number: "2+",
+      label: "Years\nExperience",
       color: "#0470c9",
-      fullTitle: "Months of Experience",
+      fullTitle: "Years of Experience",
       description:
         "Professional software development experience across multiple companies and projects",
     },
